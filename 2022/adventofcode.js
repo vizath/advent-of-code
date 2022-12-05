@@ -5,30 +5,27 @@ const content = fs.readFileSync("./input.txt");
 const lines = content
   .toString()
   .split("\n")
-  .map((s) => s.split(""))
-  .reduce((carry, b, i) => {
-    if (i % 3 === 0) {
-      carry.push([b]);
-    } else {
-      carry[carry.length - 1].push(b);
-    }
-    return carry;
-  }, []);
+  .map((s) => s.split(","))
+  .map((s) =>
+    s.map((sections) => {
+      const n = sections.split("-");
+      const t = [];
+      for (let i = Number(n[0]); i <= Number(n[1]); i++) {
+        t.push(i);
+      }
+      return t;
+    })
+  );
 console.log("first line:", lines.at(0));
 console.log("last line:", lines.at(-1));
 
-const backpacks = lines.map(([c1, c2, c3]) => {
-  const intersection = c1
-    .filter((x) => c2.includes(x))
-    .filter((x) => c3.includes(x));
-  const code = intersection[0].charCodeAt(0);
-  if (code >= 97) {
-    return code - 96;
-  } else {
-    return code - 38;
-  }
+const isIncluded = lines.filter(([g1, g2]) => {
+  return (
+    g1.every((section) => g2.includes(section)) ||
+    g2.every((section) => g1.includes(section))
+  );
 });
 
-const answers = backpacks.reduce((a, b) => a + b);
+const answers = isIncluded.length;
 
 console.log("answer", answers);
