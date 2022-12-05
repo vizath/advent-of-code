@@ -29,9 +29,7 @@ containers.forEach((line) => {
 });
 
 lines.forEach(([nb, start, end]) => {
-  for (let i = 0; i < nb; i++) {
-    parsed[end - 1].push(parsed[start - 1].pop());
-  }
+    parsed[end - 1].push(...parsed[start - 1].splice(-nb, nb));
 });
 
 console.log(parsed);
