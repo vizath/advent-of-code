@@ -8,9 +8,16 @@ console.log("last line:", lines.at(-1));
 
 let answers = 0;
 
+const markerLength = 14;
 const line = lines;
-for (let i = 3; i < line.length; i++) {
-  if (new Set([line[i - 3], line[i - 2], line[i - 1], line[i]]).size === 4) {
+for (let i = markerLength - 1; i < line.length; i++) {
+  if (
+    new Set(
+      Array(markerLength)
+        .fill(0)
+        .map((_, k) => line[i - k])
+    ).size === markerLength
+  ) {
     answers = i + 1;
     break;
   }
