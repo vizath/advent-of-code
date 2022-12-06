@@ -2,38 +2,18 @@ const fs = require("fs");
 
 const content = fs.readFileSync("./input.txt");
 
-const lines = content
-  .toString()
-  .split("\n\n")[1]
-  .split("\n")
-  .map((s) => /move (\d+) from (\d+) to (\d+)/.exec(s))
-  .map(([_, nb, start, end]) => [Number(nb), Number(start), Number(end)]);
+const lines = content.toString();
 console.log("first line:", lines.at(0));
 console.log("last line:", lines.at(-1));
 
-const containers = content.toString().split("\n\n")[0].split("\n").reverse();
-containers.shift();
+let answers = 0;
 
-const nbContainers = 9;
-const parsed = Array(nbContainers)
-  .fill(null)
-  .map(() => []);
-containers.forEach((line) => {
-  let col = 0;
-  for (let i = 1; i < line.length; i += 4) {
-    if (line[i] && line[i] !== " ") {
-      parsed[col].push(line[i]);
-    }
-    col++;
+const line = lines;
+for (let i = 3; i < line.length; i++) {
+  if (new Set([line[i - 3], line[i - 2], line[i - 1], line[i]]).size === 4) {
+    answers = i + 1;
+    break;
   }
-});
-
-lines.forEach(([nb, start, end]) => {
-    parsed[end - 1].push(...parsed[start - 1].splice(-nb, nb));
-});
-
-console.log(parsed);
-
-const answers = parsed.map((p) => p[p.length - 1]).join("");
+}
 
 console.log("answer", answers);
