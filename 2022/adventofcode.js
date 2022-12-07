@@ -52,17 +52,38 @@ const tree = lines.reduce(
 );
 
 console.log(tree.files);
-const answers = Object.entries(tree.files)
-  .map(([directory]) => {
+const totalSizes = Object.fromEntries(
+  Object.entries(tree.files).map(([directory]) => {
     const sudDirectories = Object.keys(tree.files).filter(
       (d) => `${d}/`.indexOf(`${directory}/`) === 0
     );
-    return sudDirectories
-      .map((d) => tree.files[d].map((f) => Number(f.size)))
-      .flat()
-      .reduce((c, f) => c + f);
+    return [
+      directory,
+      sudDirectories
+        .map((d) => tree.files[d].map((f) => Number(f.size)))
+        .flat()
+        .reduce((c, f) => c + f),
+    ];
   })
-  .filter((s) => s <= 100000)
-  .reduce((c, s) => c + s, 0);
+);
+
+const sizes = Object.fromEntries(
+  Object.entries(tree.files).map(([directory, files]) => {
+    return [directory, files.reduce((c, f) => c + Number(f.size), 0)];
+  })
+);
+
+const totalSize = Object.values(sizes).reduce((c, f) => c + f);
+
+const total = 70000000;
+const root = totalSize;
+const unused = total - root;
+const needed = 30000000 - unused;
+
+const answers = Object.values(totalSizes)
+  .sort((a, b) => a - b)
+  .filter((s) => s >= needed)[0];
+
+console.log(total, root, unused, needed);
 
 console.log("answer", answers);
